@@ -1,0 +1,49 @@
+#include <iostream>
+#include <fstream>
+#include "Environment_MhollandRL.hpp"
+
+using namespace std;
+
+
+const std::vector<double> ACC_LIST = {0.0, 0.005, -0.005, 0.01, -0.01, 0.02, -0.02, 0.03, -0.03, 0.04, -0.04};
+std::vector<int> actionRecord;
+int main()
+{ 
+
+
+    double acceleration = ACC_LIST[0];
+    double latticedepth = 15.0;
+    std::string filename = "action" + std::to_string(acceleration) + "maxsteps"+std::to_string(maxSteps)+".txt";
+
+    std::fstream myfile(filename, std::ios_base::in);
+    std::ofstream out("Momentum.dat");
+    std::ofstream out2("Position.dat");
+    std::ofstream out3("CFI.dat");
+
+    int a;
+    while (myfile >> a)
+    {   actionRecord.push_back(a);
+        printf("%i ", a);
+    }
+
+    Environment environment(std::vector<double>{acceleration, latticedepth}); 
+    out << environment.getWavepacket().momentum().transpose() << endl;
+    out2 << environment.getWavepacket().position().transpose() << endl;
+    out3 << environment.actualCFI() << endl;
+
+    for (auto &p : actionRecord){
+        environment.applyAction(p);
+        out << environment.getWavepacket().momentum().transpose() << endl;
+        out2 << environment.getWavepacket().position().transpose() << endl;
+        out3 << environment.actualCFI() << endl;
+    };
+
+        
+
+
+    out.close();
+    out2.close();
+    out3.close();
+
+    exit(0);
+};

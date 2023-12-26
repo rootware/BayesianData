@@ -1,0 +1,1 @@
+/home/labuser/anaconda3/envs/Research/bin/c++ -Wall -Wextra -fpermissive   -O3 -rdynamic CMakeFiles/generate.dir/src/Generate.cpp.o -o generate 
