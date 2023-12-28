@@ -39,9 +39,9 @@ int main()
 { 
     // Eigen::VectorXd a_list = Eigen::VectorXd::LinSpaced(101,-0.0225,0.0225);
     Eigen::VectorXd a_list = Eigen::VectorXd::LinSpaced(101,-0.00446,0.00446);
-    Eigen::VectorXd V_list = Eigen::VectorXd::LinSpaced(51, 9.5, 10.5);
+    Eigen::VectorXd V_list = Eigen::VectorXd::LinSpaced(51, 9.0 , 11.0);
 
-    std::vector<double> currentshaking = shakingfunctions2p2e; // Option 1
+    std::vector<double> currentshaking = shakingfunctions; // 1param acc but treated as 2param
 
   //  Eigen::VectorXd V_list(1) ;
   //  V_list <<10.0;
