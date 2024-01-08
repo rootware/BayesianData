@@ -2,23 +2,25 @@ import numpy as np;
 import matplotlib.pyplot as plt;
 import scipy.fft as fft;
 
+
+def KLDivergence(  P, Q):
+    if len(P) != len(Q):
+        return None;
+    sum =0;
+
+    for i in range(len(P)):
+        sum = np.dot(P, np.log2( np.divide(P, Q)));
+
+    return sum;
+
+def JSDivergence( P, Q):
+    M = (P+Q)/2;
+    JS = 0.5 * ( KLDivergence(P,M) + KLDivergence(Q, M));
+    return JS;
+
 class Sequence2param:
 
 
-    def KLDivergence( P, Q):
-        if len(P) != len(Q):
-            return None;
-        sum =0;
-
-        for i in range(len(P)):
-            sum = np.dot(P, np.log2( np.divide(P, Q)));
-
-        return sum;
-
-    def JSDivergence( P, Q):
-        M = (P+Q)/2;
-        JS = 0.5 * ( KLDivergence(P,M) + KLDivergence(Q, M));
-        return JS;
 
     def __init__ (self, filepath):
         self.AList = np.loadtxt(filepath + "Acceleration.txt");
@@ -63,7 +65,7 @@ class Sequence2param:
         return plotPaV;
 
 
-    def JSDMatrix (self):
+    def accJSD (self):
         momindices=np.where(self.AVListIndex[:,1]==25)[0];
         momproblist =self.MomProb[momindices];
         indices = self.AVListIndex[momindices];
@@ -74,8 +76,35 @@ class Sequence2param:
         no_of_values = len(accindices);
         JSDivergenceMatrix=np.zeros((no_of_values, no_of_values)) ;
 
+
+
         for i in accindices:
             for j in accindices:
                 JSDivergenceMatrix [i][j]= JSDivergence(momproblist[i], momproblist[j])
 
         return JSDivergenceMatrix;
+
+    def crossJSD(self):
+        momindices_a=np.where(self.AVListIndex[:,1]==25)[0];
+        momproblist_a =self.MomProb[momindices_a];
+        indices_a = self.AVListIndex[momindices_a];
+
+        momindices_V=np.where(self.AVListIndex[:,0]==50)[0];
+        momproblist_V = self.MomProb[momindices_V];
+        indices_V = self.AVListIndex[momindices_V];
+
+        accindices = indices_a[:, 0];
+        acc = self.AList[accindices];
+
+        lattindices = indices_V[:, 1];
+        latt = self.VList[lattindices]
+
+        no_of_values_a = len(accindices);
+        no_of_values_V = len(lattindices);
+        JSDivergenceMatrix=np.zeros((no_of_values_a, no_of_values_V)) ;
+    
+        for i in accindices:
+            for j in lattindices:
+                JSDivergenceMatrix [i][j]= JSDivergence(momproblist_a[i], momproblist_V[j])
+        return JSDivergenceMatrix;
+
